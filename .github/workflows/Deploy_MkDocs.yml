@@ -23,6 +23,8 @@ jobs:
         pip install mkdocs mkdocs-material  # Instala MkDocs y el tema Material
 
     - name: Build the site
+
+    
       run: mkdocs gh-deploy --config-file ../../mkdocs.yml --remote-branch --force  # Genera el sitio estático
 
     - name: Deploy to GitHub Pages
