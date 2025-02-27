@@ -1,33 +1,49 @@
-name: Deploy_MkDocs
-
+name: Build GitHub Pages
 on:
   push:
     branches:
-      - main  # Cambia esto si tu rama principal tiene otro nombre
+      - main
+    paths:
+      - 'example-mkdocs/**'
+  workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
+  id-token: write
 
-jobs:
-  build:
+jobs: 
+  build_mkdocs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.9
+      - run: pip install \
+            mkdocs-material
+      - run: mkdocs gh-deploy --config-file eaixtProyect_Prueba/mkdocs.yml --force
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.12'  # Cambia la versión según sea necesario
-
-    - name: Install MkDocs and dependencies
-      run: |
-        pip install mkdocs mkdocs-material  # Instala MkDocs y el tema Material
-
-    - name: Build the site
-    
-      run: mkdocs gh-deploy --config-file aixtProyect_Prueba/mkdocs.yml --remote-branch --force  # Genera el sitio estático
-
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./site  # Directorio donde MkDocs genera los archivos
+  deploy_mkdocs:
+    needs: build_mkdocs
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
