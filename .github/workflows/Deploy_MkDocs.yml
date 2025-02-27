@@ -24,7 +24,7 @@ jobs:
         with:
           python-version: 3.9
       - run: pip install mkdocs mkdocs-material  # Instala MkDocs y el tema Material
-      - run: mkdocs gh-deploy --config-file eaixtProyect_Prueba/mkdocs.yml --force
+      - run: mkdocs gh-deploy --config-file exampleMkdocs/mkdocs.yml --force
 
   deploy_mkdocs:
     needs: build_mkdocs
