@@ -2,7 +2,7 @@ name: Build GitHub Pages
 on:
   push:
     branches:
-      - main
+      - master
     paths:
       - 'example-mkdocs/**'
   workflow_dispatch:
